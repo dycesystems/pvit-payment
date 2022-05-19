@@ -62,7 +62,7 @@ class Payment
 
     private function isValidNumber(string $number): bool
     {
-        return ($number && strlen($number) === 9 && preg_match("/(0){1}([6-7]){1}([0-9]){7}/", $number));
+        return ($number && strlen($number) === 9 && preg_match("/(0|9){1}(6|7|9){1}([0-9]){7}/", $number));
     }
 
     /**
