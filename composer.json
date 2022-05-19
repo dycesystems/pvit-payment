@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Dyce\\PvitPayment\\": "src/"
+            "Dyce\\Pvit\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Dyce\\PvitPayment\\Tests\\": "tests/"
+            "Dyce\\Pvit\\Tests\\": "tests/"
         }
     },
     "config": {
