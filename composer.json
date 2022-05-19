@@ -1,0 +1,49 @@
+{
+    "name": "dyce/pvit-payment",
+    "description": "A package to use PVit payment gateway",
+    "keywords": ["dyce", "pvit", "payment", "laravel"],
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/dycesystems/pvit-payment/issues",
+        "source": "https://github.com/dycesystems/pvit-payment"
+    },
+    "authors": [
+        {
+            "name": "DYCE",
+            "email": "dev@dyce.net"
+        }
+    ],
+    "require": {
+        "php": "^7.2|^9.3",
+        "ext-curl": "*",
+        "ext-simplexml": "*",
+        "ext-json": "*",
+        "ext-libxml": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.2|^9.3",
+        "symfony/process": "~3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dyce\\PvitPayment\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dyce\\PvitPayment\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Dyce\\PvitPayment\\PvitPaymentServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
