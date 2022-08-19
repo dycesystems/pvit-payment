@@ -3,6 +3,7 @@
 namespace Dyce\Pvit;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class Payment
 {
@@ -90,7 +91,9 @@ class Payment
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        Log::debug('PVIT - Payment Request', ['data' => $params]);
         $result = curl_exec($ch);
+        Log::debug('PVIT - Payment Result', ['result' => $result]);
 
         if ($result === false) throw new Exception("Error while executing the query");
 

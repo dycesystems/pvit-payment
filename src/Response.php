@@ -11,6 +11,7 @@ class Response
     private string $operateur;
     private int $type;
     private string $ref;
+    private string $transaction;
     private string $agent;
 
     public static function fromArray(array $data): Response
@@ -19,6 +20,7 @@ class Response
 
         $response->setStatut(static::getValue($data, 'STATUT'));
         $response->setRef(static::getValue($data, 'REF'));
+        $response->setTransaction(static::getValue($data, 'NUM_TRANSACTION'));
         $response->setType(static::getValue($data, 'TYPE'));
         $response->setOperateur(static::getValue($data, 'OPERATEUR'));
         $response->setTelClient(static::getValue($data, 'TEL_CLIENT'));
@@ -112,6 +114,22 @@ class Response
     private function setRef(string $ref)
     {
         $this->ref = $ref;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransaction(): string
+    {
+        return $this->transaction;
+    }
+
+    /**
+     * @param string $transaction
+     */
+    private function setTransaction(string $transaction)
+    {
+        $this->transaction = $transaction;
     }
 
     /**
