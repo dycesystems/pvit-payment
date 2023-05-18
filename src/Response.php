@@ -13,17 +13,21 @@ class Response
     private string $ref;
     private string $transaction;
     private string $agent;
+    private string $amount;
+    private string $fees;
 
     public static function fromArray(array $data): Response
     {
         $response = new Response();
 
         $response->setStatut(static::getValue($data, 'STATUT'));
-        $response->setRef(static::getValue($data, 'REF'));
+        $response->setRef(static::getValue($data, 'REFERENCE_MARCHAND'));
         $response->setTransaction(static::getValue($data, 'NUM_TRANSACTION'));
+        $response->setAmount(static::getValue($data, 'AMOUNT'));
+        $response->setFees(static::getValue($data, 'FEES'));
         $response->setType(static::getValue($data, 'TYPE'));
         $response->setOperateur(static::getValue($data, 'OPERATEUR'));
-        $response->setTelClient(static::getValue($data, 'TEL_CLIENT'));
+        $response->setTelClient(static::getValue($data, 'NUMERO_CLIENT'));
         $response->setToken(static::getValue($data, 'TOKEN'));
         $response->setMessage(static::getValue($data, 'MESSAGE'));
         $response->setAgent(static::getValue($data, 'AGENT'));
@@ -34,6 +38,38 @@ class Response
     private static function getValue(array $arr, string $key): string
     {
         return (!isset($arr[$key]) || gettype($arr[$key]) === 'array') ? '' : $arr[$key];
+    }
+
+    /**
+     * @return string
+     */
+    public function getFees(): string
+    {
+        return $this->fees;
+    }
+
+    /**
+     * @param string $fees
+     */
+    private function setFees(string $fees)
+    {
+        $this->fees = $fees;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmount(): string
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param string $amount
+     */
+    private function setAmount(string $amount)
+    {
+        $this->amount = $amount;
     }
 
     /**

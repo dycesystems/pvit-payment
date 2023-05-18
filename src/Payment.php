@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class Payment
 {
+    private string $codeMarchand;
     private string $telMarchand;
     private int $montant;
     private string $ref;
@@ -15,16 +16,19 @@ class Payment
     private int $action;
     private string $service;
     private string $operateur;
+    private string $redirect;
     private string $agent;
+    private string $otp;
 
-    private string $pvitUrl = 'https://mypvit.com/pvit-secure-full-api.kk';
-    private array $actionValues = [1, 2, 3, 5];
+    private string $pvitUrl = 'https://mypvitapi.pro/api/pvit-secure-full-api-v3.kk';
+    private array $actionValues = [1, 2, 3, 5, 7];
     private array $serviceValues = ['REST', 'WEB'];
-    private array $operateurValues = ['AM', 'MC', 'VM'];
+    private array $operateurValues = ['AM', 'MC', 'VM', 'BP'];
 
-    public function __construct(string $telMarchand, string $token)
+    public function __construct(string $codeMarchand, string $token)
     {
-        $this->telMarchand = $telMarchand;
+        $this->codeMarchand = $codeMarchand;
+        $this->telMarchand = '';
         $this->montant = 0;
         $this->ref = '';
         $this->telClient = '';
@@ -32,7 +36,9 @@ class Payment
         $this->action = 1;
         $this->service = 'REST';
         $this->operateur = 'AM';
+        $this->redirect = '';
         $this->agent = 'DycePvit';
+        $this->otp = '';
     }
 
     /**
@@ -41,13 +47,14 @@ class Payment
     private function validate()
     {
         // Required parameters
-        if (empty($this->telMarchand)) throw new Exception("'telMarchand' parameter is required");
+        if (empty($this->codeMarchand)) throw new Exception("'codeMarchand' parameter is required");
         if (empty($this->montant)) throw new Exception("'montant' parameter is required");
         if (empty($this->ref)) throw new Exception("'ref' parameter is required");
         if (empty($this->telClient)) throw new Exception("'telClient' parameter is required");
         if (empty($this->action)) throw new Exception("'action' parameter is required");
         if (empty($this->service)) throw new Exception("'service' parameter is required");
         if (empty($this->operateur)) throw new Exception("'operateur' parameter is required");
+        if ($this->service === 'WEB' && empty($this->redirect)) throw new Exception("'redirect' parameter is required");
 
         if (!$this->isValidNumber($this->telMarchand)) throw new Exception("telMarchand is not a correct phone number");
         if (!$this->isValidNumber($this->telClient)) throw new Exception("telClient is not a correct phone number");
@@ -83,7 +90,7 @@ class Payment
      */
     private function request(): string
     {
-        $params = 'tel_marchand=' . $this->telMarchand . '&montant=' . $this->montant . '&tel_client=' . $this->telClient . '&ref=' . $this->ref . '&token=' . $this->token . '&action=' . $this->action . '&service=' . $this->service . '&operateur=' . $this->operateur . '&agent=' . $this->agent;
+        $params = 'code_marchand=' . $this->codeMarchand . '&montant=' . $this->montant . '&numero_client=' . $this->telClient . '&reference_marchand=' . $this->ref . '&token=' . $this->token . '&action=' . $this->action . '&service=' . $this->service . '&operateur=' . $this->operateur . '&redirect=' . $this->redirect . '&agent=' . $this->agent . '&otp=' . $this->otp;
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -114,6 +121,14 @@ class Payment
         $resArray = json_decode($json, true);
 
         return Response::fromArray($resArray);
+    }
+
+    /**
+     * @param string $codeMarchand
+     */
+    public function setCodeMarchand(string $codeMarchand)
+    {
+        $this->codeMarchand = $codeMarchand;
     }
 
     /**
@@ -181,11 +196,27 @@ class Payment
     }
 
     /**
+     * @param string $redirect
+     */
+    public function setRedirect(string $redirect)
+    {
+        $this->redirect = $redirect;
+    }
+
+    /**
      * @param string $agent
      */
     public function setAgent(string $agent)
     {
         $this->agent = $agent;
+    }
+
+    /**
+     * @param string $otp
+     */
+    public function setOtp(string $otp)
+    {
+        $this->otp = $otp;
     }
 
 }
