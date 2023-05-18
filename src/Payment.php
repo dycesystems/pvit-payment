@@ -56,7 +56,7 @@ class Payment
         if (empty($this->operateur)) throw new Exception("'operateur' parameter is required");
         if ($this->service === 'WEB' && empty($this->redirect)) throw new Exception("'redirect' parameter is required");
 
-        if (!$this->isValidNumber($this->telMarchand)) throw new Exception("telMarchand is not a correct phone number");
+        if (!empty($this->telMarchand) && !$this->isValidNumber($this->telMarchand)) throw new Exception("telMarchand is not a correct phone number");
         if (!$this->isValidNumber($this->telClient)) throw new Exception("telClient is not a correct phone number");
 
         if (strlen($this->ref) > 13) throw new Exception("the 'ref' value must be 13 characters maximum");
