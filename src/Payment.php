@@ -3,6 +3,7 @@
 namespace Dyce\Pvit;
 
 use Exception;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class Payment
@@ -76,12 +77,16 @@ class Payment
     /**
      * @throws Exception
      */
-    public function send(): Response
+    public function send(): Response|string|array
     {
         $this->validate();
 
-        $xml = $this->request();
+        if ($this->service === 'WEB') {
+            //return $this->paramsRequest();
+            return $this->httpRequest();
+        }
 
+        $xml = $this->request();
         return $this::parse($xml);
     }
 
@@ -105,6 +110,58 @@ class Payment
         if ($result === false) throw new Exception("Error while executing the query");
 
         return $result;
+    }
+
+    private function httpRequest(): string
+    {
+        $params = [
+            'code_marchand' => $this->codeMarchand,
+            'montant' => $this->montant,
+            'numero_client' => $this->telClient,
+            'reference_marchand' => $this->ref,
+            'token' => $this->token,
+            'action' => $this->action,
+            'service' => $this->service,
+            'operateur' => $this->operateur,
+            'redirect' => $this->redirect,
+            'agent' => $this->agent,
+            //'otp' => $this->otp,
+        ];
+
+        $client = Http::asForm();
+
+        $response = $client->post($this->pvitUrl, $params);
+
+        Log::debug('PVIT - Payment Headers', ['headers' => $response->headers()]);
+
+        if ($response->failed()) {
+            Log::error('PVIT - Payment Error', ['body' => $response->status()]);
+            throw new Exception('Une erreur est survenue veuillez rééssayer plus tard.');
+        }
+        if ($response->redirect()) {
+            return $response->effectiveUri();
+        }
+        return $response->effectiveUri();
+    }
+
+    private function paramsRequest(): array
+    {
+        $params = [
+            'url' => $this->pvitUrl,
+            'code_marchand' => $this->codeMarchand,
+            'montant' => $this->montant,
+            'numero_client' => $this->telClient,
+            'reference_marchand' => $this->ref,
+            'token' => $this->token,
+            'action' => $this->action,
+            'service' => $this->service,
+            'operateur' => $this->operateur,
+            'redirect' => $this->redirect,
+            'agent' => $this->agent,
+            //'otp' => $this->otp,
+        ];
+
+        return $params;
     }
 
     /**
